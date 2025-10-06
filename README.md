@@ -35,7 +35,7 @@ script-macos-setup/
 
 ## A Fresh macOS Setup
 
-These instructions are for setting up new Mac devices. Instead, if you want to get started building your own dotfiles, you can [find those instructions below](#your-own-dotfiles).
+These instructions are for setting up new Mac devices. Instead, if you want to customize this setup, you can [find those instructions below](#customization).
 
 ### Backup your data
 

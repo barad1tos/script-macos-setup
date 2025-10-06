@@ -1,0 +1,34 @@
+#!/bin/bash
+# macOS Setup - Main Entry Point
+# Elegant, minimal macOS setup automation
+set -euo pipefail
+
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source shared functions
+source "$SCRIPT_DIR/modules/_functions.sh"
+
+# Welcome message
+echo ""
+echo "════════════════════════════════════════════════════════════════"
+echo "                    macOS Setup Automation                      "
+echo "════════════════════════════════════════════════════════════════"
+echo ""
+
+# Execute setup modules in sequence
+"$SCRIPT_DIR/modules/cleanup-state.sh"
+"$SCRIPT_DIR/modules/preflight.sh"
+"$SCRIPT_DIR/modules/xcode.sh"
+"$SCRIPT_DIR/modules/homebrew.sh"
+"$SCRIPT_DIR/modules/1password.sh"
+"$SCRIPT_DIR/modules/dotfiles.sh"
+"$SCRIPT_DIR/modules/macos.sh"
+"$SCRIPT_DIR/modules/mackup.sh"
+"$SCRIPT_DIR/modules/verify.sh"
+"$SCRIPT_DIR/modules/cleanup.sh"
+
+# Done
+echo ""
+success "Setup completed successfully!"
+echo ""

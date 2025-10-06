@@ -1,4 +1,4 @@
-<p align="center"><img src="art/banner-2x.png"></p>
+<p align="center"><img src="art/banner-2x.png" alt=""></p>
 
 ## Introduction
 
@@ -8,7 +8,30 @@ This repository serves as my way to help me setup and maintain my Mac. It takes 
 📺 - [Watch the screencast on Laracasts](https://laracasts.com/series/guest-spotlight/episodes/1)  
 💡 - [Learn how to build your own dotfiles](https://github.com/driesvints/dotfiles#your-own-dotfiles)
 
-If you find this repo useful, [consider sponsoring me](https://github.com/sponsors/driesvints) (a little bit)! ❤️ 
+If you find this repo useful, [consider sponsoring me](https://github.com/sponsors/driesvints) (a little bit)! ❤️
+
+## Repository Structure
+
+```bash
+script-macos-setup/
+├── setup              # Main entry point (executable)
+├── Brewfile           # Homebrew packages
+├── modules/           # Setup modules
+│   ├── _functions.sh  # Shared utilities
+│   ├── cleanup-state.sh
+│   ├── preflight.sh
+│   ├── xcode.sh
+│   ├── homebrew.sh
+│   ├── 1password.sh
+│   ├── dotfiles.sh
+│   ├── macos.sh
+│   ├── mackup.sh
+│   ├── verify.sh
+│   └── cleanup.sh
+└── art/               # README assets
+```
+
+**Philosophy**: Minimal, elegant structure. Single `modules/` directory for all setup scripts, executable `setup` entry point following UNIX convention (like `git`, `docker`).
 
 ## A Fresh macOS Setup
 
@@ -46,7 +69,7 @@ After backing up your old Mac you may now follow these install instructions to s
 4. Run the installation with:
 
     ```zsh
-    cd ~/.dotfiles && ./fresh.sh
+    cd ~/.dotfiles && ./setup
     ```
 
 5. Start `Herd.app` and run its install process
@@ -55,7 +78,7 @@ After backing up your old Mac you may now follow these install instructions to s
 
 Your Mac is now ready to use!
 
-> 💡 You can use a different location than `~/.dotfiles` if you want. Make sure you also update the references in the [`.zshrc`](./.zshrc#L2) and [`fresh.sh`](./fresh.sh#L20) files.
+> 💡 You can use a different location than `~/.dotfiles` if you want. Make sure you also update the references in the [`.zshrc`](./.zshrc#L2) and [`setup`](./setup) files.
 
 ### Cleaning your old Mac (optionally)
 
@@ -83,6 +106,87 @@ mackup backup
 You can tweak the shell theme, the Oh My Zsh settings and much more. Go through the files in this repo and tweak everything to your liking.
 
 Enjoy your own Dotfiles!
+
+## Hybrid Backup Strategy
+
+This setup uses a **hybrid approach** combining Dotfiles (Git) and Mackup (iCloud) for maximum reliability and convenience.
+
+### Configuration Management Philosophy
+
+#### 🔧 Dotfiles (Git) - For CLI Configurations
+- **Location:** `~/Library/Mobile Documents/com~apple~CloudDocs/3. Git/Own/dotfiles`
+- **Manages:**
+  - ZSH (`.zshrc`, `.zshenv`, functions, aliases)
+  - Git (`.gitconfig`, `.gitignore_global`)
+  - Bash (`.bashrc`, `.bash_profile`)
+  - Vim/Neovim (init.vim, plugins)
+  - P10k theme (`.p10k.zsh`)
+- **Benefits:**
+  - Git versioning (history, branches, rollback)
+  - Pull requests and code review
+  - Cross-platform compatibility
+
+#### 📦 Mackup (iCloud) - For GUI Applications
+- **Backup Directory:** `~/Library/Mobile Documents/com~apple~CloudDocs/2. Backup/mackup`
+- **Manages:**
+  - IDE settings (VS Code, PyCharm, Sublime Text)
+  - Productivity tools (Raycast, Obsidian, Notion, Things3, Todoist)
+  - Terminal emulators (Warp, Ghostty, iTerm2)
+  - System utilities (Bartender, Hazel, Moom, PopClip, iStat Menus)
+  - Communication apps (Slack, Discord, Telegram, WhatsApp)
+- **Benefits:**
+  - Automatic iCloud sync
+  - No commits needed for GUI setting changes
+  - Simple restore on new Mac
+
+#### 🔐 Security Exclusions
+The following sensitive data is **excluded** from Mackup:
+- SSH keys (`~/.ssh/`)
+- AWS credentials (`~/.aws/credentials`)
+- Kubernetes configs (`~/.kube/*.yaml`)
+- Docker registry credentials
+- GCloud credentials
+
+**Recommendation:** Use 1Password for storing secrets.
+
+### Custom Mackup Applications
+
+For applications without built-in Mackup support, custom configurations are created in `~/.mackup/`:
+
+**Supported custom apps (3 total):**
+- `reeder.cfg` - Reeder RSS reader feeds and preferences
+- `warp.cfg` - Warp terminal settings and themes
+- `zed.cfg` - Zed text editor configuration
+
+**Note:** Most modern apps (Arc, Notion, Slack, Discord, etc.) sync settings via cloud authentication, so custom mackup configs are only needed for apps that store settings locally.
+
+### Workflow Order
+
+The `setup` script executes installation modules in the following order:
+1. `cleanup-state.sh` - Cleanup previous setup state
+2. `preflight.sh` - System checks and prerequisites
+3. `xcode.sh` - Xcode Command Line Tools
+4. `homebrew.sh` - Homebrew and packages
+5. `1password.sh` - 1Password with SSH agent
+6. `dotfiles.sh` - Clones dotfiles, installs CLI configs
+7. `macos.sh` - macOS system preferences
+8. `mackup.sh` - Configures Mackup, syncs GUI settings
+9. `verify.sh` - Verification checks
+10. `cleanup.sh` - Final cleanup and finalization
+
+This order ensures no conflicts between systems.
+
+### Why This Approach?
+
+**Compared to Dotfiles only:**
+- ✅ CLI configs with Git history
+- ✅ GUI configs auto-synced (no manual copying)
+- ✅ No need to commit every GUI preference change
+
+**Compared to Mackup only:**
+- ✅ CLI configs have full Git history
+- ✅ Sensitive data excluded from sync
+- ✅ Fine-grained control over what syncs
 
 ## Thanks To...
 
